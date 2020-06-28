@@ -11,6 +11,7 @@
 // constructor WITHOUT memory allocation
 ChatBot::ChatBot()
 {
+    
     // invalidate data handles
     _image = nullptr;
     _chatLogic = nullptr;
@@ -36,14 +37,76 @@ ChatBot::~ChatBot()
 
     // deallocate heap memory
     if(_image != NULL) // Attention: wxWidgets used NULL and not nullptr
-    {
+    { 
         delete _image;
         _image = NULL;
+
     }
 }
 
 //// STUDENT CODE
 ////
+ChatBot::ChatBot (const ChatBot &source){
+ std::cout << "ChatBot copy constructor" << std::endl;
+    _currentNode = source._currentNode;
+    _chatLogic = source._chatLogic;
+    _rootNode = source._rootNode;
+     if (_image != nullptr)
+        delete _image;
+    _image=new wxBitmap();
+    *_image=*source._image;
+}
+ChatBot& ChatBot::operator=(const ChatBot &source){
+    std::cout << "ChatBot copy operator" << std::endl;
+   if(this==&source){
+        return *this;
+    }
+    _currentNode = source._currentNode;
+    _chatLogic = source._chatLogic;
+    _rootNode = source._rootNode;
+    if (_image != nullptr){
+         delete _image;
+    }   
+    _image=new wxBitmap();
+    *_image=*source._image;
+    return *this;
+}
+ChatBot &ChatBot :: operator=(ChatBot &&source){ // 5 : move assignment operator
+  std::cout << "ChatBot move operator" << std::endl;
+  if(this==&source){
+        return *this;
+    }
+
+  //  _currentNode=new GraphNode(0);
+    _currentNode = source._currentNode;
+    delete _image;
+    _chatLogic = source._chatLogic;
+    _chatLogic->SetChatbotHandle(this);
+    _rootNode = source._rootNode;
+    //_image=new wxBitmap();
+    _image=source._image;
+
+  source.SetChatLogicHandle(nullptr);
+  source.SetRootNode(nullptr);
+  source._currentNode=nullptr;
+  source._image=nullptr;
+}
+ChatBot::ChatBot(ChatBot &&source){
+ std::cout << "ChatBot move constructor" << std::endl;
+    // _currentNode=new GraphNode(0);
+     _currentNode = source._currentNode;
+    _chatLogic = source._chatLogic;
+    _chatLogic->SetChatbotHandle(this);
+    _rootNode = source._rootNode;
+    _image=new wxBitmap();
+    _image=source._image;
+
+  source.SetChatLogicHandle(nullptr);
+  source.SetRootNode(nullptr);
+  source._currentNode=nullptr;
+  source._image=nullptr;
+
+}
 
 ////
 //// EOF STUDENT CODE
